@@ -30,7 +30,7 @@ else:
         user="postgres",
         password= os.getenv("SIFRA"),
         host=os.getenv("DB_HOST", "localhost"),
-        port="5433"
+        port="5432"
         )
 kursor = ThreadLocalCursor(konekcija)
 
