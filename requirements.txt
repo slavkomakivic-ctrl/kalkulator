@@ -1,0 +1,9 @@
+fastapi==0.163.0
+passlib==1.7.4
+psycopg2_binary==2.9.13
+pydantic==2.14.3
+pytest==9.1.1
+pytest==9.2.0
+python-dotenv==1.2.4
+python_jose==3.5.0
+uvicorn==0.54.0

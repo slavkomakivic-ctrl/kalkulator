@@ -8,6 +8,9 @@ import database
 BASE_DIR = Path(__file__).parent
 
 from routes import router as auth_router
+from routes_konfiguracija import router as konfiguracija_router
+from routes_unos import router as unos_router
+from routes_kalkulacije import router as kalk_router
 
 app = FastAPI()
 
@@ -20,6 +23,9 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(konfiguracija_router)
+app.include_router(unos_router)
+app.include_router(kalk_router)
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 

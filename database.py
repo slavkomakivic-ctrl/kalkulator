@@ -22,24 +22,52 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-
 if DATABASE_URL:
-    konekcija1 = psycopg2.connect(DATABASE_URL)
+    konekcija = psycopg2.connect(DATABASE_URL)
 else:
-    konekcija1 = psycopg2.connect(
-        dbname="korisnici_db",
+    konekcija = psycopg2.connect(
+        dbname="kalkulator_db",
         user="postgres",
         password= os.getenv("SIFRA"),
         host=os.getenv("DB_HOST", "localhost"),
-        port="5432"
+        port="5433"
         )
-kursor1 = ThreadLocalCursor(konekcija1)
+kursor = ThreadLocalCursor(konekcija)
 
-kursor1.execute("""
+kursor.execute("""
     CREATE TABLE IF NOT EXISTS korisnici (
         id SERIAL PRIMARY KEY,
         korisnicko_ime TEXT UNIQUE,
         lozinka_hash TEXT
     )
 """)
-konekcija1.commit()
+
+kursor.execute("""
+    CREATE TABLE IF NOT EXISTS profil_korisnika (
+        id SERIAL PRIMARY KEY,
+        korisnicko_ime TEXT NOT NULL UNIQUE REFERENCES korisnici(korisnicko_ime),
+        ime TEXT NOT NULL,
+        prezime TEXT NOT NULL
+    )
+""")
+
+kursor.execute("""
+    CREATE TABLE IF NOT EXISTS konfiguracija (
+        id SERIAL PRIMARY KEY,
+        profil_id INTEGER NOT NULL REFERENCES profil_korisnika(id),
+        cijene JSONB NOT NULL,
+        vazi_od DATE NOT NULL DEFAULT CURRENT_DATE,
+        UNIQUE (profil_id, vazi_od)
+    )
+""")
+
+kursor.execute("""
+    CREATE TABLE IF NOT EXISTS kalkulacija (
+        id SERIAL PRIMARY KEY,
+        profil_id INTEGER NOT NULL REFERENCES profil_korisnika(id),
+        datum DATE NOT NULL,
+        podaci JSONB NOT NULL,
+        UNIQUE (profil_id, datum)
+    )
+""")
+konekcija.commit()

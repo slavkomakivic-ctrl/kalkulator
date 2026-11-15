@@ -1,2 +1,1 @@
-CREATE DATABASE korisnici_db;
-CREATE DATABASE ime_tvoje_baze_podataka_db;
+CREATE DATABASE kalkulator_db;
