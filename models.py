@@ -41,7 +41,7 @@ class Unos(BaseModel):
     ture: list[Tura] | None = None
     cekanje: NonNegativeInt | None = None
     stranka: NonNegativeInt | None = None
-    bonus: int = 1
+    bonus: NonNegativeInt | None = None
 
 class Kalkulacija(BaseModel):
     datum: date = Field(default_factory=date.today)

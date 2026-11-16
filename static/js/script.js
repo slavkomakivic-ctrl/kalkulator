@@ -1,10 +1,12 @@
-import { inicijalizujPregled, prikaziPregledPerioda } from "./period.js?v=9";
-import "./unos.js?v=8";
+import { inicijalizujPregled, prikaziPregledPerioda } from "./period.js?v=10";
+import "./unos.js?v=9";
 
 const sekcijaPrijave = document.getElementById("sekcija-prijava");
 const sekcijaRegistracije = document.getElementById("registracija");
 const sekcijaProfila = document.getElementById("sekcija-profil");
 const sekcijaKonfiguracije = document.getElementById("sekcija-konfiguracija");
+const sekcijaPerioda = document.getElementById("sekcija-obracun-perioda");
+const porukaPerioda = document.getElementById("poruka-perioda");
 const linkRegistracije = document.getElementById("link-registracija");
 const linkPrijave = document.getElementById("link-prijava");
 const authLayout = document.getElementById("auth-layout");
@@ -59,10 +61,19 @@ function prikaziKonfiguracijuProfila() {
     document.getElementById("ime").focus();
 }
 
+function postaviRezimKonfiguracije(novaKonfiguracija) {
+    document.getElementById("naslov-konfiguracije").textContent =
+        novaKonfiguracija ? "Nova konfiguracija" : "Konfiguracija profila";
+    document.querySelector('#forma-konfiguracija button[type="submit"]').textContent =
+        novaKonfiguracija ? "Dodaj konfiguraciju" : "Sačuvaj konfiguraciju";
+    document.getElementById("dugme-odustani-konfiguracije").hidden = !novaKonfiguracija;
+}
+
 function prikaziFormuKonfiguracije() {
     sakrijAutentifikaciju();
     sekcijaProfila.hidden = true;
     sekcijaKonfiguracije.hidden = false;
+    postaviRezimKonfiguracije(false);
     sekcijaKonfiguracije.querySelector('[data-opcija]').focus();
 }
 
@@ -258,7 +269,95 @@ const formaKonfiguracije = document.getElementById("forma-konfiguracija");
 if (formaKonfiguracije) {
     const porukaKonfiguracije = document.getElementById("poruka-konfiguracije");
     const dugmeKonfiguracije = formaKonfiguracije.querySelector('button[type="submit"]');
+    const dugmeOdustaniKonfiguracije = document.getElementById("dugme-odustani-konfiguracije");
+    const dugmeIzmijeniKonfiguraciju = document.getElementById("dugme-izmijeni-konfiguraciju");
+    const poljeVaziOd = document.getElementById("vazi-od");
     const opcije = formaKonfiguracije.querySelectorAll("[data-opcija]");
+
+    function danasnjiDatum() {
+        const danas = new Date();
+        const mjesec = String(danas.getMonth() + 1).padStart(2, "0");
+        const dan = String(danas.getDate()).padStart(2, "0");
+        return `${danas.getFullYear()}-${mjesec}-${dan}`;
+    }
+
+    function sljedeciSlobodanDatum(konfiguracije, pocetniDatum) {
+        const zauzetiDatumi = new Set(
+            konfiguracije.map((stavka) => String(stavka.vazi_od).slice(0, 10))
+        );
+        const datum = new Date(`${pocetniDatum}T00:00:00`);
+        const formatiraj = () =>
+            `${datum.getFullYear()}-${String(datum.getMonth() + 1).padStart(2, "0")}-${String(datum.getDate()).padStart(2, "0")}`;
+
+        while (zauzetiDatumi.has(formatiraj())) {
+            datum.setDate(datum.getDate() + 1);
+        }
+        return formatiraj();
+    }
+
+    dugmeIzmijeniKonfiguraciju.addEventListener("click", async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            document.getElementById("poruka-perioda").textContent = "Greška: prijavite se ponovo.";
+            return;
+        }
+
+        dugmeIzmijeniKonfiguraciju.disabled = true;
+        document.getElementById("poruka-perioda").textContent = "Učitavam konfiguraciju...";
+        try {
+            const odgovor = await fetch("/konfiguracije", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const rezultat = await odgovor.json().catch(() => ({}));
+            if (!odgovor.ok) {
+                throw new Error(rezultat.detail || "Konfiguracija nije učitana.");
+            }
+            if (!Array.isArray(rezultat.konfiguracije)) {
+                throw new Error("Server nije vratio ispravnu listu konfiguracija.");
+            }
+
+            const datumDanas = danasnjiDatum();
+            const konfiguracija = rezultat.konfiguracije
+                .filter((stavka) => String(stavka.vazi_od).slice(0, 10) <= datumDanas)
+                .sort((a, b) => String(b.vazi_od).localeCompare(String(a.vazi_od)))[0];
+            if (!konfiguracija || !konfiguracija.cijene) {
+                throw new Error("Nema važeće konfiguracije za izmjenu.");
+            }
+
+            formaKonfiguracije.reset();
+            for (const opcija of opcije) {
+                const nazivOpcije = opcija.dataset.opcija;
+                const dostupna = Object.hasOwn(konfiguracija.cijene, nazivOpcije);
+                const kontejnerCijene = opcija.closest("div").querySelector("[data-cijena-container]");
+                const poljeCijene = kontejnerCijene.querySelector("[data-cijena]");
+                opcija.checked = dostupna;
+                kontejnerCijene.hidden = !dostupna;
+                poljeCijene.disabled = !dostupna;
+                poljeCijene.required = dostupna;
+                poljeCijene.value = dostupna ? String(konfiguracija.cijene[nazivOpcije]) : "";
+            }
+            poljeVaziOd.value = sljedeciSlobodanDatum(rezultat.konfiguracije, datumDanas);
+            postaviRezimKonfiguracije(true);
+            sekcijaPerioda.hidden = true;
+            sekcijaKonfiguracije.hidden = false;
+            porukaPerioda.textContent = "";
+            porukaKonfiguracije.textContent =
+                `Izbori i cijene su preuzeti iz konfiguracije važeće od ${String(konfiguracija.vazi_od).slice(0, 10)}.`;
+            poljeVaziOd.focus();
+        } catch (greska) {
+            document.getElementById("poruka-perioda").textContent =
+                `Greška: ${greska.message || "Konfiguracija nije učitana."}`;
+        } finally {
+            dugmeIzmijeniKonfiguraciju.disabled = false;
+        }
+    });
+
+    dugmeOdustaniKonfiguracije.addEventListener("click", () => {
+        postaviRezimKonfiguracije(false);
+        porukaKonfiguracije.textContent = "";
+        sekcijaKonfiguracije.hidden = true;
+        prikaziPregledPerioda();
+    });
 
     opcije.forEach((opcija) => {
         opcija.addEventListener("change", () => {
@@ -335,7 +434,8 @@ if (formaKonfiguracije) {
                 return;
             }
 
-            porukaKonfiguracije.textContent = "Konfiguracija je uspešno sačuvana.";
+            porukaKonfiguracije.textContent = "Konfiguracija je uspješno sačuvana.";
+            postaviRezimKonfiguracije(false);
             prikaziPregledPerioda();
             await inicijalizujPregled();
         } catch (greska) {
@@ -366,7 +466,17 @@ function odjaviKorisnika() {
 
 document.getElementById("dugme-odjava").addEventListener("click", odjaviKorisnika);
 
-const sacuvaniToken = localStorage.getItem("token");
+function obnoviSacuvaniToken() {
+    const trajniToken = localStorage.getItem("token");
+    const token = trajniToken || sessionStorage.getItem("token");
+    if (token && !trajniToken) {
+        localStorage.setItem("token", token);
+    }
+    sessionStorage.removeItem("token");
+    return token;
+}
+
+const sacuvaniToken = obnoviSacuvaniToken();
 if (sacuvaniToken) {
     const dugmePrijave = formaPrijave.querySelector('button[type="submit"]');
     const porukaPrijave = document.getElementById("poruka");

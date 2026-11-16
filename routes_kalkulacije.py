@@ -86,7 +86,12 @@ def obracun_za_period(
             for linija in lista_podataka:
                 datum = linija["datum"]
                 iznos, ukupno = obracun_za_dan(profil_id,datum)
-                odgovor.append({"datum": datum, "iznos": iznos, "ukupno": ukupno})
+                odgovor.append({
+                    "datum": datum,
+                    "vrsta_dana": linija["podaci"].get("vrsta_dana", "radni"),
+                    "iznos": iznos,
+                    "ukupno": ukupno,
+                })
             ukupni_iznos = 0
             obracunatih_dana = 0
             for o in odgovor:

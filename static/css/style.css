@@ -7,6 +7,10 @@
   text-rendering: optimizeLegibility;
 }
 
+html {
+  overflow-x: clip;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -128,7 +132,8 @@ form > div > label {
 button[type="submit"],
 #dugme-odustani-unosa,
 #dugme-izmeni-unos,
-#dugme-potvrdi-unos {
+#dugme-potvrdi-unos,
+#dugme-odustani-konfiguracije {
   min-height: 2.7rem;
   padding: 0.65rem 1rem;
   border: 0;
@@ -228,7 +233,39 @@ button[type="submit"],
   transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
 }
 
-.auth-tab svg {
+.ikona-interfejsa {
+  display: inline-block;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.ikona-prijava {
+  -webkit-mask-image: url("/static/icons/right-to-bracket-solid-full.svg");
+  mask-image: url("/static/icons/right-to-bracket-solid-full.svg");
+}
+
+.ikona-registracija {
+  -webkit-mask-image: url("/static/icons/user-plus-solid-full.svg");
+  mask-image: url("/static/icons/user-plus-solid-full.svg");
+}
+
+.ikona-odjava {
+  -webkit-mask-image: url("/static/icons/arrow-right-from-bracket-solid-full.svg");
+  mask-image: url("/static/icons/arrow-right-from-bracket-solid-full.svg");
+}
+
+.ikona-postavke {
+  -webkit-mask-image: url("/static/icons/gear-solid-full.svg");
+  mask-image: url("/static/icons/gear-solid-full.svg");
+}
+
+.auth-tab .ikona-interfejsa {
   width: 1.15rem;
   height: 1.15rem;
 }
@@ -490,6 +527,43 @@ body:not(.auth-mode) #auth-footer {
   gap: 1rem;
 }
 
+.dashboard-header-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.dugme-ikona-konfiguracije {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #475569;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.dugme-ikona-konfiguracije:hover {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.dugme-ikona-konfiguracije:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 25%);
+  outline-offset: 2px;
+}
+
+.dugme-ikona-konfiguracije .ikona-interfejsa {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
 .dugme-odjava {
   display: inline-flex;
   min-height: 2.5rem;
@@ -512,7 +586,7 @@ body:not(.auth-mode) #auth-footer {
   color: #0f172a;
 }
 
-.dugme-odjava svg {
+.dugme-odjava .ikona-interfejsa {
   width: 1.1rem;
   height: 1.1rem;
 }
@@ -668,129 +742,67 @@ body:not(.auth-mode) #auth-footer {
   gap: 0.5rem;
 }
 
-.kartica-stavki {
-  color: #94a3b8;
-  font-size: 0.82rem;
-  font-weight: 650;
+.lista-vrsta-dana {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.oznaka-vrste-dana {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid;
+  border-radius: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 550;
   white-space: nowrap;
 }
 
-.struktura-traka {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-  height: 0.7rem;
-  gap: 2px;
-  margin-top: 1.35rem;
-  border-radius: 999px;
-  background: #f1f5f9;
+.oznaka-vrste-dana strong {
+  font-weight: 750;
 }
 
-.struktura-traka span {
-  min-width: 0;
-  height: 100%;
-  transition: width 180ms ease;
+.oznaka-vrste-dana-tacka {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
 }
 
-[data-stavka="promet"] {
-  --boja-stavke: #2563eb;
-  --pozadina-stavke: #eff6ff;
-  --obrub-stavke: #bfdbfe;
-  --tekst-stavke: #1d4ed8;
+.vrsta-radni {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
 }
 
-[data-stavka="cekanje"] {
-  --boja-stavke: #f59e0b;
-  --pozadina-stavke: #fffbeb;
-  --obrub-stavke: #fde68a;
-  --tekst-stavke: #b45309;
+.vrsta-radni .oznaka-vrste-dana-tacka {
+  background: #10b981;
 }
 
-[data-stavka="bonus"] {
-  --boja-stavke: #10b981;
-  --pozadina-stavke: #ecfdf5;
-  --obrub-stavke: #a7f3d0;
-  --tekst-stavke: #047857;
+.vrsta-godisnji {
+  border-color: #fed7aa;
+  background: #fff7ed;
+  color: #c2410c;
 }
 
-[data-stavka="kilometar"] {
-  --boja-stavke: #06b6d4;
-  --pozadina-stavke: #ecfeff;
-  --obrub-stavke: #a5f3fc;
-  --tekst-stavke: #0e7490;
+.vrsta-godisnji .oznaka-vrste-dana-tacka {
+  background: #f97316;
 }
 
-[data-stavka="dnevnica"] {
-  --boja-stavke: #8b5cf6;
-  --pozadina-stavke: #f5f3ff;
-  --obrub-stavke: #ddd6fe;
-  --tekst-stavke: #6d28d9;
+.vrsta-bolovanje {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
-[data-stavka="procenat"] {
-  --boja-stavke: #6366f1;
-  --pozadina-stavke: #eef2ff;
-  --obrub-stavke: #c7d2fe;
-  --tekst-stavke: #4338ca;
+.vrsta-bolovanje .oznaka-vrste-dana-tacka {
+  background: #ef4444;
 }
 
-[data-stavka="fiks"] {
-  --boja-stavke: #ec4899;
-  --pozadina-stavke: #fdf2f8;
-  --obrub-stavke: #fbcfe8;
-  --tekst-stavke: #be185d;
-}
-
-[data-stavka="stranka"] {
-  --boja-stavke: #f97316;
-  --pozadina-stavke: #fff7ed;
-  --obrub-stavke: #fed7aa;
-  --tekst-stavke: #c2410c;
-}
-
-[data-stavka="godisnji"] {
-  --boja-stavke: #14b8a6;
-  --pozadina-stavke: #f0fdfa;
-  --obrub-stavke: #99f6e4;
-  --tekst-stavke: #0f766e;
-}
-
-[data-stavka="bolovanje"] {
-  --boja-stavke: #ef4444;
-  --pozadina-stavke: #fef2f2;
-  --obrub-stavke: #fecaca;
-  --tekst-stavke: #b91c1c;
-}
-
-[data-stavka="bonus_kilometri"] {
-  --boja-stavke: #84cc16;
-  --pozadina-stavke: #f7fee7;
-  --obrub-stavke: #d9f99d;
-  --tekst-stavke: #4d7c0f;
-}
-
-[data-stavka="bonus_promet"] {
-  --boja-stavke: #0ea5e9;
-  --pozadina-stavke: #f0f9ff;
-  --obrub-stavke: #bae6fd;
-  --tekst-stavke: #0369a1;
-}
-
-.struktura-traka span[data-stavka] {
-  background: var(--boja-stavke, #6366f1);
-}
-
-.oznaka-stavke[data-stavka] {
-  border-color: var(--obrub-stavke, #c7d2fe);
-  background: var(--pozadina-stavke, #eef2ff);
-  color: var(--tekst-stavke, #4338ca);
-}
-
-.oznaka-stavke[data-stavka] .oznaka-stavke-tacka {
-  background: var(--boja-stavke, #6366f1);
-}
-
-.poruka-statistike,
 .poruka-perioda {
   min-height: 1.35rem;
   margin: 0.5rem 0;
@@ -1046,6 +1058,100 @@ button.dugme-sekundarno {
   background: #6366f1;
 }
 
+[data-stavka="promet"] {
+  --boja-stavke: #2563eb;
+  --pozadina-stavke: #eff6ff;
+  --obrub-stavke: #bfdbfe;
+  --tekst-stavke: #1d4ed8;
+}
+
+[data-stavka="cekanje"] {
+  --boja-stavke: #f59e0b;
+  --pozadina-stavke: #fffbeb;
+  --obrub-stavke: #fde68a;
+  --tekst-stavke: #b45309;
+}
+
+[data-stavka="bonus"] {
+  --boja-stavke: #10b981;
+  --pozadina-stavke: #ecfdf5;
+  --obrub-stavke: #a7f3d0;
+  --tekst-stavke: #047857;
+}
+
+[data-stavka="kilometar"] {
+  --boja-stavke: #06b6d4;
+  --pozadina-stavke: #ecfeff;
+  --obrub-stavke: #a5f3fc;
+  --tekst-stavke: #0e7490;
+}
+
+[data-stavka="dnevnica"] {
+  --boja-stavke: #8b5cf6;
+  --pozadina-stavke: #f5f3ff;
+  --obrub-stavke: #ddd6fe;
+  --tekst-stavke: #6d28d9;
+}
+
+[data-stavka="procenat"] {
+  --boja-stavke: #6366f1;
+  --pozadina-stavke: #eef2ff;
+  --obrub-stavke: #c7d2fe;
+  --tekst-stavke: #4338ca;
+}
+
+[data-stavka="fiks"] {
+  --boja-stavke: #ec4899;
+  --pozadina-stavke: #fdf2f8;
+  --obrub-stavke: #fbcfe8;
+  --tekst-stavke: #be185d;
+}
+
+[data-stavka="stranka"] {
+  --boja-stavke: #f97316;
+  --pozadina-stavke: #fff7ed;
+  --obrub-stavke: #fed7aa;
+  --tekst-stavke: #c2410c;
+}
+
+[data-stavka="godisnji"] {
+  --boja-stavke: #14b8a6;
+  --pozadina-stavke: #f0fdfa;
+  --obrub-stavke: #99f6e4;
+  --tekst-stavke: #0f766e;
+}
+
+[data-stavka="bolovanje"] {
+  --boja-stavke: #ef4444;
+  --pozadina-stavke: #fef2f2;
+  --obrub-stavke: #fecaca;
+  --tekst-stavke: #b91c1c;
+}
+
+[data-stavka="bonus_kilometri"] {
+  --boja-stavke: #84cc16;
+  --pozadina-stavke: #f7fee7;
+  --obrub-stavke: #d9f99d;
+  --tekst-stavke: #4d7c0f;
+}
+
+[data-stavka="bonus_promet"] {
+  --boja-stavke: #0ea5e9;
+  --pozadina-stavke: #f0f9ff;
+  --obrub-stavke: #bae6fd;
+  --tekst-stavke: #0369a1;
+}
+
+.oznaka-stavke[data-stavka] {
+  border-color: var(--obrub-stavke, #c7d2fe);
+  background: var(--pozadina-stavke, #eef2ff);
+  color: var(--tekst-stavke, #4338ca);
+}
+
+.oznaka-stavke[data-stavka] .oznaka-stavke-tacka {
+  background: var(--boja-stavke, #6366f1);
+}
+
 .tabela-obracuna td.celija-stavki {
   padding-left: 2rem;
 }
@@ -1285,13 +1391,22 @@ button.dugme-sekundarno {
     gap: 0.5rem;
   }
 
+  .dashboard-header-actions {
+    gap: 0.5rem;
+  }
+
+  .dugme-ikona-konfiguracije {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
   .dugme-odjava {
     width: 2.5rem;
     flex: 0 0 auto;
     padding: 0;
   }
 
-  .dugme-odjava span {
+  .dugme-odjava > span:not(.ikona-interfejsa) {
     display: none;
   }
 
@@ -1564,8 +1679,7 @@ button.dugme-sekundarno {
   .dashboard-header,
   .filter-panel,
   .dugme-akcija,
-  .poruka-perioda,
-  .poruka-statistike {
+  .poruka-perioda {
     display: none !important;
   }
 

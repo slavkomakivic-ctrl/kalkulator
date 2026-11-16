@@ -60,18 +60,6 @@ function formatirajDan(datum) {
     return ["NED", "PON", "UTO", "SRI", "ČET", "PET", "SUB"][datumObjekat.getDay()];
 }
 
-function formatirajBrojStavki(broj) {
-    const posljednjeDvije = broj % 100;
-    const posljednja = broj % 10;
-    if (posljednjeDvije >= 11 && posljednjeDvije <= 14) {
-        return "stavki";
-    }
-    if (posljednja === 1) {
-        return "stavka";
-    }
-    return posljednja >= 2 && posljednja <= 4 ? "stavke" : "stavki";
-}
-
 function datumLokalno(datum) {
     const godina = datum.getFullYear();
     const mjesec = String(datum.getMonth() + 1).padStart(2, "0");
@@ -118,9 +106,6 @@ export async function inicijalizujPregled() {
 
     const tekuciMjesec = rasponMjeseca();
     postaviRaspon(tekuciMjesec.od, tekuciMjesec.do, document.getElementById("dugme-ovaj-mjesec"));
-    document.getElementById("kpi-mjesec-naziv").textContent =
-        tekuciMjesec.naziv.charAt(0).toLocaleUpperCase("sr-Latn") + tekuciMjesec.naziv.slice(1);
-
     const profilZahtjev = fetch("/konfiguracije", {
         headers: { "Authorization": `Bearer ${token}` }
     }).then(async (odgovor) => {
@@ -135,7 +120,6 @@ export async function inicijalizujPregled() {
 
     const ucitavanje = await Promise.allSettled([
         profilZahtjev,
-        ucitajStatistikuMjeseca(tekuciMjesec),
         ucitajObracunZaPeriod(tekuciMjesec.od, tekuciMjesec.do)
     ]);
 
@@ -245,6 +229,30 @@ function prikaziObracun(rezultat) {
     rezultatiPerioda.hidden = false;
 }
 
+function prikaziStatistiku(rezultat, datumPocetka, datumZavrsetka) {
+    const dnevniUnosi = rezultat.odgovor || [];
+    const brojDana = Number(rezultat.obracunatih_dana) || dnevniUnosi.length;
+    const ukupno = Number(rezultat.ukupni_zbir) || 0;
+    document.getElementById("kpi-mjesec-zarada").textContent = formatirajIznos(ukupno);
+    document.getElementById("kpi-mjesec-dani").textContent = String(brojDana);
+    document.getElementById("kpi-prosjek-po-danu").textContent =
+        formatirajIznos(brojDana ? ukupno / brojDana : 0);
+    document.getElementById("kpi-mjesec-naziv").textContent =
+        `${formatirajDatum(datumPocetka)} – ${formatirajDatum(datumZavrsetka)}`;
+
+    const brojPoVrsti = { radni: 0, godisnji: 0, bolovanje: 0 };
+    for (const dnevniUnos of dnevniUnosi) {
+        const vrstaDana = dnevniUnos.vrsta_dana || "radni";
+        if (Object.hasOwn(brojPoVrsti, vrstaDana)) {
+            brojPoVrsti[vrstaDana] += 1;
+        }
+    }
+
+    document.getElementById("kpi-broj-radnih").textContent = String(brojPoVrsti.radni);
+    document.getElementById("kpi-broj-godisnjih").textContent = String(brojPoVrsti.godisnji);
+    document.getElementById("kpi-broj-bolovanja").textContent = String(brojPoVrsti.bolovanje);
+}
+
 export async function ucitajObracunZaPeriod(datumPocetka, datumZavrsetka) {
     const rezultatiPerioda = document.getElementById("rezultati-perioda");
     const dugmePerioda = document.querySelector('#forma-perioda button[type="submit"]');
@@ -263,6 +271,7 @@ export async function ucitajObracunZaPeriod(datumPocetka, datumZavrsetka) {
 
     try {
         const rezultat = await dohvatiObracun(datumPocetka, datumZavrsetka);
+        prikaziStatistiku(rezultat, datumPocetka, datumZavrsetka);
         prikaziObracun(rezultat);
         porukaPerioda.textContent = "";
         return true;
@@ -273,53 +282,6 @@ export async function ucitajObracunZaPeriod(datumPocetka, datumZavrsetka) {
         if (dugmePerioda) {
             dugmePerioda.disabled = false;
         }
-    }
-}
-
-export async function ucitajStatistikuMjeseca(mjesec = rasponMjeseca()) {
-    const porukaStatistike = document.getElementById("poruka-statistike");
-    porukaStatistike.textContent = "";
-    try {
-        const rezultat = await dohvatiObracun(mjesec.od, mjesec.do);
-        const brojDana = Number(rezultat.obracunatih_dana) || 0;
-        const ukupno = Number(rezultat.ukupni_zbir) || 0;
-        document.getElementById("kpi-mjesec-zarada").textContent = formatirajIznos(rezultat.ukupni_zbir);
-        document.getElementById("kpi-mjesec-dani").textContent = String(brojDana);
-        document.getElementById("kpi-prosjek-po-danu").textContent =
-            formatirajIznos(brojDana ? ukupno / brojDana : 0);
-
-        const zbirPoStavkama = {};
-        for (const dnevniObracun of rezultat.odgovor) {
-            for (const [stavka, vrijednost] of Object.entries(dnevniObracun.iznos || {})) {
-                const iznos = Number(vrijednost);
-                if (Number.isFinite(iznos) && iznos > 0) {
-                    zbirPoStavkama[stavka] = (zbirPoStavkama[stavka] || 0) + iznos;
-                }
-            }
-        }
-        const brojStavki = Object.keys(zbirPoStavkama).length;
-        document.getElementById("kpi-broj-stavki").textContent =
-            `${brojStavki} ${formatirajBrojStavki(brojStavki)}`;
-
-        const struktura = document.getElementById("kpi-struktura");
-        const ukupnoPoStavkama = Object.values(zbirPoStavkama).reduce((suma, iznos) => suma + iznos, 0);
-        struktura.replaceChildren();
-        if (ukupnoPoStavkama > 0) {
-            for (const [stavka, iznos] of Object.entries(zbirPoStavkama)) {
-                const segment = document.createElement("span");
-                segment.dataset.stavka = stavka;
-                segment.style.width = `${(iznos / ukupnoPoStavkama) * 100}%`;
-                segment.title = `${naziviStavki[stavka] || stavka}: ${formatirajIznos(iznos)}`;
-                struktura.append(segment);
-            }
-            struktura.setAttribute("aria-label", "Struktura prihoda po obračunskim stavkama");
-        } else {
-            struktura.setAttribute("aria-label", "Nema obračunskih stavki za tekući mjesec");
-        }
-        return true;
-    } catch (greska) {
-        porukaStatistike.textContent = `Statistika nije učitana: ${greska.message || "Greška u komunikaciji sa serverom."}`;
-        return false;
     }
 }
 
@@ -373,10 +335,7 @@ document.getElementById("redovi-obracuna").addEventListener("click", async (doga
             throw new Error(rezultat.detail || "Unos nije obrisan.");
         }
 
-        await Promise.all([
-            ucitajObracunZaPeriod(datumOd.value, datumDo.value),
-            ucitajStatistikuMjeseca()
-        ]);
+        await ucitajObracunZaPeriod(datumOd.value, datumDo.value);
         porukaPerioda.textContent = "Unos je uspješno obrisan.";
     } catch (greska) {
         porukaPerioda.textContent = `Greška: ${greska.message || "Unos nije obrisan."}`;

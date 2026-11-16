@@ -97,6 +97,7 @@ def test_period_s_jednim_radnim_danom(klijent, monkeypatch):
     r = klijent.get("/obracun_za_period?od=2026-11-01&do=2026-11-30")
     assert r.status_code == 200
     assert r.json()["ukupni_zbir"] == pytest.approx(165)   # 20 + 100 + 45
+    assert r.json()["odgovor"][0]["vrsta_dana"] == "radni"
 
 def test_godisnji_uzima_cijenu_godisnjeg():
     iznosi, ukupno = modul.kalkulacija_za_dan({"vrsta_dana": "godisnji"}, {"godisnji": 50})

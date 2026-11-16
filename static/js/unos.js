@@ -1,9 +1,8 @@
 import {
     formatirajIznos,
     prikaziPregledPerioda,
-    ucitajObracunZaPeriod,
-    ucitajStatistikuMjeseca
-} from "./period.js?v=9";
+    ucitajObracunZaPeriod
+} from "./period.js?v=10";
 
 const sekcijaPerioda = document.getElementById("sekcija-obracun-perioda");
 const sekcijaUnosa = document.getElementById("sekcija-unos");
@@ -394,10 +393,7 @@ async function sacuvajUnos() {
         document.getElementById("datum-do").value = datum;
         document.querySelectorAll(".dugme-period").forEach((dugme) => dugme.classList.remove("aktivan"));
         prikaziPregledPerioda();
-        const [prikazUspio] = await Promise.all([
-            ucitajObracunZaPeriod(datum, datum),
-            ucitajStatistikuMjeseca()
-        ]);
+        const prikazUspio = await ucitajObracunZaPeriod(datum, datum);
         if (!prikazUspio) {
             document.getElementById("poruka-perioda").textContent =
                 "Unos je sačuvan, ali prikaz obračuna nije uspio. Pokušajte ponovo.";

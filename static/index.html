@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Kalkulator za vozača</title>
-  <link rel="stylesheet" href="/static/css/style.css?v=19">
+  <link rel="stylesheet" href="/static/css/style.css?v=24">
 </head>
 
 <body class="auth-mode">
@@ -31,16 +31,12 @@
         <div class="auth-tabs" role="tablist" aria-label="Prijava ili registracija">
           <button type="button" id="link-prijava" class="auth-tab aktivan" role="tab"
             aria-selected="true" aria-controls="sekcija-prijava">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14 8l4 4-4 4m4-4H5m7-7h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5" />
-            </svg>
+            <span class="ikona-interfejsa ikona-prijava" aria-hidden="true"></span>
             <span>Prijava</span>
           </button>
           <button type="button" id="link-registracija" class="auth-tab" role="tab"
             aria-selected="false" aria-controls="registracija">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19a6 6 0 0 0-12 0m6-8a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm11-3v6m-3-3h6" />
-            </svg>
+            <span class="ikona-interfejsa ikona-registracija" aria-hidden="true"></span>
             <span>Registracija</span>
           </button>
         </div>
@@ -166,7 +162,7 @@
     </section>
 
     <section id="sekcija-konfiguracija" hidden>
-      <h1>Konfiguracija profila</h1>
+      <h1 id="naslov-konfiguracije">Konfiguracija profila</h1>
       <form id="forma-konfiguracija">
         <div>
           <label for="vazi-od">Konfiguracija važi od</label>
@@ -253,6 +249,7 @@
           </div>
         </fieldset>
         <button type="submit">Sačuvaj konfiguraciju</button>
+        <button type="button" id="dugme-odustani-konfiguracije" hidden>Odustani</button>
         <p id="poruka-konfiguracije" role="status"></p>
       </form>
     </section>
@@ -261,9 +258,7 @@
       <header class="dashboard-header">
         <div class="dashboard-header-start">
           <button type="button" id="dugme-odjava" class="dugme-odjava" aria-label="Odjava">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5m5 5H3m9-9h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" />
-            </svg>
+            <span class="ikona-interfejsa ikona-odjava" aria-hidden="true"></span>
             <span>Odjava</span>
           </button>
           <div class="dashboard-brand">
@@ -278,18 +273,24 @@
             </div>
           </div>
         </div>
-        <button type="button" id="dugme-novi-unos" class="dugme-glavno" aria-label="Novi unos">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
-          </svg>
-          <span class="dugme-novi-unos-tekst">Novi unos</span>
-        </button>
+        <div class="dashboard-header-actions">
+          <button type="button" id="dugme-izmijeni-konfiguraciju" class="dugme-ikona-konfiguracije"
+            aria-label="Postavke konfiguracije" title="Postavke konfiguracije">
+            <span class="ikona-interfejsa ikona-postavke" aria-hidden="true"></span>
+          </button>
+          <button type="button" id="dugme-novi-unos" class="dugme-glavno" aria-label="Novi unos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+            </svg>
+            <span class="dugme-novi-unos-tekst">Novi unos</span>
+          </button>
+        </div>
       </header>
 
-      <section class="dashboard-kartice" aria-label="Statistika za tekući mjesec">
+      <section class="dashboard-kartice" aria-label="Statistika za izabrani period">
         <article class="dashboard-kartica">
           <div>
-            <p class="kartica-naslov">Ukupno zarađeno za ovaj mjesec</p>
+            <p class="kartica-naslov">Ukupno zarađeno za period</p>
             <p id="kpi-mjesec-zarada" class="kartica-vrijednost">0,00&nbsp;€</p>
             <p id="kpi-mjesec-naziv" class="kartica-opis"></p>
           </div>
@@ -328,14 +329,24 @@
         </article>
         <article class="dashboard-kartica kartica-strukture">
           <div class="struktura-zaglavlje">
-            <p class="kartica-naslov">Struktura obračuna</p>
-            <span id="kpi-broj-stavki" class="kartica-stavki">0 stavki</span>
+            <p class="kartica-naslov">Dani po vrsti</p>
           </div>
-          <div id="kpi-struktura" class="struktura-traka" role="img" aria-label="Struktura obračuna za tekući mjesec"></div>
+          <div id="kpi-vrste-dana" class="lista-vrsta-dana" aria-label="Broj dana po vrsti u odabranom periodu">
+            <span class="oznaka-vrste-dana vrsta-radni" data-vrsta-dana="radni">
+              <span class="oznaka-vrste-dana-tacka" aria-hidden="true"></span>
+              <span>Radni: <strong id="kpi-broj-radnih">0</strong></span>
+            </span>
+            <span class="oznaka-vrste-dana vrsta-godisnji" data-vrsta-dana="godisnji">
+              <span class="oznaka-vrste-dana-tacka" aria-hidden="true"></span>
+              <span>Godišnji: <strong id="kpi-broj-godisnjih">0</strong></span>
+            </span>
+            <span class="oznaka-vrste-dana vrsta-bolovanje" data-vrsta-dana="bolovanje">
+              <span class="oznaka-vrste-dana-tacka" aria-hidden="true"></span>
+              <span>Bolovanje: <strong id="kpi-broj-bolovanja">0</strong></span>
+            </span>
+          </div>
         </article>
       </section>
-      <p id="poruka-statistike" class="poruka-statistike" role="status"></p>
-
       <section class="dashboard-panel filter-panel" aria-label="Filter obračuna">
         <form id="forma-perioda" class="forma-perioda">
           <div class="polje-datum">
@@ -491,5 +502,5 @@
     <span>Sistem za praćenje plate vozača kamiona</span>
   </footer>
 
-  <script type="module" src="/static/js/script.js?v=15"></script>
+  <script type="module" src="/static/js/script.js?v=20"></script>
 </body>
