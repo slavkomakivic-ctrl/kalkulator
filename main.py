@@ -32,3 +32,7 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 @app.get("/", include_in_schema=False)
 def pocetna():
     return FileResponse(BASE_DIR / "static" / "index.html")
+
+@app.get("/login", include_in_schema=False)
+def login():
+    return FileResponse(BASE_DIR / "static" / "login.html")

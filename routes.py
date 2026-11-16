@@ -23,7 +23,12 @@ def registruj_korisnika(korisnik: Korisnik):
     except Exception:
         konekcija.rollback()
         raise
-    return {"poruka": f"Registrovan korisnik: {korisnik.korisnicko_ime}"}
+    token = napravi_token(korisnik.korisnicko_ime)
+    return {
+        "poruka": f"Registrovan korisnik: {korisnik.korisnicko_ime}",
+        "access_token": token,
+        "token_type": "bearer"
+    }
 
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):

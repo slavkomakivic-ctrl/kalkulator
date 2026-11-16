@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="sr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kalkulator za vozača</title>
+  <link rel="stylesheet" href="/static/css/style.css?v=19">
+</head>
+
+<body class="auth-mode">
+  <div class="auth-background-glow" aria-hidden="true">
+    <span></span>
+    <span></span>
+  </div>
+
+  <main>
+    <div id="auth-layout" class="auth-layout">
+      <header class="auth-brand">
+        <div class="auth-brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 3.75h7.5L19 8.3v11.95a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-13a2.5 2.5 0 0 1 2-2.5Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 4v5h5M9 12h1m4 0h1m-6 3h1m4 0h1" />
+          </svg>
+        </div>
+        <h1>Evidencija i obračun</h1>
+        <p>Sistem za praćenje plate vozača kamiona</p>
+      </header>
+
+      <div class="auth-card">
+        <div class="auth-tabs" role="tablist" aria-label="Prijava ili registracija">
+          <button type="button" id="link-prijava" class="auth-tab aktivan" role="tab"
+            aria-selected="true" aria-controls="sekcija-prijava">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 8l4 4-4 4m4-4H5m7-7h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5" />
+            </svg>
+            <span>Prijava</span>
+          </button>
+          <button type="button" id="link-registracija" class="auth-tab" role="tab"
+            aria-selected="false" aria-controls="registracija">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19a6 6 0 0 0-12 0m6-8a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm11-3v6m-3-3h6" />
+            </svg>
+            <span>Registracija</span>
+          </button>
+        </div>
+
+        <section id="sekcija-prijava" class="auth-panel" role="tabpanel" aria-labelledby="link-prijava">
+          <form id="forma-prijava" class="auth-form">
+            <div class="auth-field">
+              <label for="korisnicko_ime">Korisničko ime</label>
+              <div class="auth-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4 7 8 6 8-6" />
+                </svg>
+                <input type="text" id="korisnicko_ime" name="username" autocomplete="username"
+                  placeholder="Korisničko ime" required>
+              </div>
+            </div>
+            <div class="auth-field">
+              <label for="lozinka">Lozinka</label>
+              <div class="auth-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="11" rx="2" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3" />
+                </svg>
+                <input type="password" id="lozinka" name="password" autocomplete="current-password"
+                  placeholder="Unesite vašu lozinku" data-password-input required>
+                <button type="button" class="auth-password-toggle" data-password-toggle="lozinka"
+                  aria-label="Prikaži lozinku" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12s3.2-6 9.5-6 9.5 6 9.5 6-3.2 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="auth-submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h8m-4-4 4 4-4 4" />
+              </svg>
+              <span>Prijavite se</span>
+            </button>
+            <p id="poruka" class="auth-message" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section id="registracija" class="auth-panel" role="tabpanel" aria-labelledby="link-registracija" hidden>
+          <form id="forma-registracija" class="auth-form">
+            <div class="auth-field">
+              <label for="registraciono_korisnicko_ime">Korisničko ime</label>
+              <div class="auth-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 21a8 8 0 0 1 16 0" />
+                </svg>
+                <input type="text" id="registraciono_korisnicko_ime" name="korisnicko_ime"
+                  autocomplete="username" placeholder="Kreirajte korisničko ime" required>
+              </div>
+            </div>
+            <div class="auth-field">
+              <label for="registraciona_lozinka">Unesite lozinku</label>
+              <div class="auth-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="11" rx="2" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3" />
+                </svg>
+                <input type="password" id="registraciona_lozinka" name="lozinka" autocomplete="new-password"
+                  placeholder="Kreirajte lozinku" data-password-input required>
+                <button type="button" class="auth-password-toggle" data-password-toggle="registraciona_lozinka"
+                  aria-label="Prikaži lozinku" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12s3.2-6 9.5-6 9.5 6 9.5 6-3.2 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="auth-field">
+              <label for="ponovljena_lozinka">Ponovite lozinku</label>
+              <div class="auth-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="11" rx="2" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3" />
+                </svg>
+                <input type="password" id="ponovljena_lozinka" name="ponovljena_lozinka" autocomplete="new-password"
+                  placeholder="Ponovite lozinku" data-password-input required>
+                <button type="button" class="auth-password-toggle" data-password-toggle="ponovljena_lozinka"
+                  aria-label="Prikaži lozinku" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12s3.2-6 9.5-6 9.5 6 9.5 6-3.2 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="auth-submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+              <span>Registrujte se</span>
+            </button>
+            <p id="poruka-registracije" class="auth-message" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <section id="sekcija-profil" hidden>
+      <h1>Konfiguracija profila</h1>
+      <form id="forma-profil">
+        <div>
+          <label for="ime">Ime</label>
+          <input type="text" id="ime" name="ime" required>
+        </div>
+        <div>
+          <label for="prezime">Prezime</label>
+          <input type="text" id="prezime" name="prezime" required>
+        </div>
+        <button type="submit">OK</button>
+        <p id="poruka-profila" role="status"></p>
+      </form>
+    </section>
+
+    <section id="sekcija-konfiguracija" hidden>
+      <h1>Konfiguracija profila</h1>
+      <form id="forma-konfiguracija">
+        <div>
+          <label for="vazi-od">Konfiguracija važi od</label>
+          <input type="date" id="vazi-od" name="vazi_od" required>
+        </div>
+        <fieldset>
+          <legend>Izaberite opcije i unesite cijenu</legend>
+          <div>
+            <label><input type="checkbox" data-opcija="kilometar"> Po kilometru</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-kilometar">Cijena po kilometru (EUR)</label>
+              <input type="number" id="cijena-kilometar" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="dnevnica"> Dnevnica</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-dnevnica">Cijena dnevnice (EUR)</label>
+              <input type="number" id="cijena-dnevnica" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="procenat"> Procenat</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-procenat">Cijena procenta (%)</label>
+              <input type="number" id="cijena-procenat" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="fiks"> Fiksni iznos</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-fiks">Fiksna cijena (EUR)</label>
+              <input type="number" id="cijena-fiks" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="cekanje"> Čekanje</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-cekanje">Cijena čekanja (EUR)</label>
+              <input type="number" id="cijena-cekanje" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="stranka"> Stranka</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-stranka">Cijena stranke (EUR)</label>
+              <input type="number" id="cijena-stranka" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="godisnji"> Godišnji odmor</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-godisnji">Cijena godišnjeg odmora (EUR)</label>
+              <input type="number" id="cijena-godisnji" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="bolovanje"> Bolovanje</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-bolovanje">Cijena bolovanja (EUR)</label>
+              <input type="number" id="cijena-bolovanje" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="bonus_kilometri"> Bonus kilometri</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-bonus-kilometri">Cijena bonus kilometara (EUR)</label>
+              <input type="number" id="cijena-bonus-kilometri" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="bonus_promet"> Bonus na promet</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-bonus-promet">Cijena bonusa na promet (EUR)</label>
+              <input type="number" id="cijena-bonus-promet" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+          <div>
+            <label><input type="checkbox" data-opcija="bonus"> Bonus</label>
+            <div data-cijena-container hidden>
+              <label for="cijena-bonus">Cijena bonusa (EUR)</label>
+              <input type="number" id="cijena-bonus" min="0.01" step="any" data-cijena disabled>
+            </div>
+          </div>
+        </fieldset>
+        <button type="submit">Sačuvaj konfiguraciju</button>
+        <p id="poruka-konfiguracije" role="status"></p>
+      </form>
+    </section>
+
+    <section id="sekcija-obracun-perioda" hidden>
+      <header class="dashboard-header">
+        <div class="dashboard-header-start">
+          <button type="button" id="dugme-odjava" class="dugme-odjava" aria-label="Odjava">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 17l5-5-5-5m5 5H3m9-9h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" />
+            </svg>
+            <span>Odjava</span>
+          </button>
+          <div class="dashboard-brand">
+            <div class="dashboard-brand-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 19V5m0 14h16M8 15v-4m4 4V7m4 8v-6" />
+              </svg>
+            </div>
+            <div>
+              <h1 id="pozdrav-korisnika">Dobro došli</h1>
+              <p>Pregled vaših unosa i zarade</p>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="dugme-novi-unos" class="dugme-glavno" aria-label="Novi unos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+          </svg>
+          <span class="dugme-novi-unos-tekst">Novi unos</span>
+        </button>
+      </header>
+
+      <section class="dashboard-kartice" aria-label="Statistika za tekući mjesec">
+        <article class="dashboard-kartica">
+          <div>
+            <p class="kartica-naslov">Ukupno zarađeno za ovaj mjesec</p>
+            <p id="kpi-mjesec-zarada" class="kartica-vrijednost">0,00&nbsp;€</p>
+            <p id="kpi-mjesec-naziv" class="kartica-opis"></p>
+          </div>
+          <span class="kartica-ikona ikona-zarada" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"></circle>
+              <text x="12" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor" stroke="none">€</text>
+            </svg>
+          </span>
+        </article>
+        <article class="dashboard-kartica">
+          <div>
+            <p class="kartica-naslov">Broj evidentiranih dana</p>
+            <p id="kpi-mjesec-dani" class="kartica-vrijednost">0</p>
+            <p class="kartica-opis">Broj datuma sa unesenim stavkama</p>
+          </div>
+          <span class="kartica-ikona ikona-dani" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="5.5" width="16" height="15" rx="2"></rect>
+              <path d="M8 3.5v4M16 3.5v4M4 9.5h16M8 13h.01M12 13h.01M16 13h.01M8 16.5h.01M12 16.5h.01"></path>
+            </svg>
+          </span>
+        </article>
+        <article class="dashboard-kartica">
+          <div>
+            <p class="kartica-naslov">Prosjek po danu</p>
+            <p id="kpi-prosjek-po-danu" class="kartica-vrijednost">0,00&nbsp;€</p>
+            <p class="kartica-opis">Prosječan zbir po aktivnom danu</p>
+          </div>
+          <span class="kartica-ikona ikona-prosjek" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="m3 17 6-6 4 4 8-8"></path>
+              <path d="M15 7h6v6"></path>
+            </svg>
+          </span>
+        </article>
+        <article class="dashboard-kartica kartica-strukture">
+          <div class="struktura-zaglavlje">
+            <p class="kartica-naslov">Struktura obračuna</p>
+            <span id="kpi-broj-stavki" class="kartica-stavki">0 stavki</span>
+          </div>
+          <div id="kpi-struktura" class="struktura-traka" role="img" aria-label="Struktura obračuna za tekući mjesec"></div>
+        </article>
+      </section>
+      <p id="poruka-statistike" class="poruka-statistike" role="status"></p>
+
+      <section class="dashboard-panel filter-panel" aria-label="Filter obračuna">
+        <form id="forma-perioda" class="forma-perioda">
+          <div class="polje-datum">
+            <label for="datum-od">Od datuma</label>
+            <input type="date" id="datum-od" name="od" required>
+          </div>
+          <div class="polje-datum">
+            <label for="datum-do">Do datuma</label>
+            <input type="date" id="datum-do" name="do" required>
+          </div>
+          <button type="submit" class="dugme-sekundarno">Prikaži podatke</button>
+        </form>
+        <div class="filter-dno">
+          <div class="brzi-periodi">
+            <span>Brzi period:</span>
+            <button type="button" id="dugme-ovaj-mjesec" class="dugme-period aktivan">Ovaj mjesec</button>
+            <button type="button" id="dugme-prosli-mjesec" class="dugme-period">Prošli mjesec</button>
+          </div>
+          <p>Prikazano <strong id="broj-prikazanih">0</strong> zapisa</p>
+        </div>
+      </section>
+
+      <p id="poruka-perioda" class="poruka-perioda" role="status"></p>
+      <section id="rezultati-perioda" class="dashboard-panel tabela-panel" hidden>
+        <div class="tabela-naslov">
+          <div>
+            <h2>Uneseni podaci</h2>
+            <p>Pregled obračuna za izabrani period</p>
+          </div>
+        </div>
+        <div class="tabela-obracuna-wrapper">
+          <table class="tabela-obracuna">
+            <colgroup>
+              <col class="kolona-datum">
+              <col class="kolona-stavke">
+              <col class="kolona-ukupno">
+              <col class="kolona-akcije">
+            </colgroup>
+            <thead>
+              <tr>
+                <th scope="col">Datum</th>
+                <th scope="col">Lista unesenih podataka</th>
+                <th scope="col">Ukupan zbir</th>
+                <th scope="col">Akcije</th>
+              </tr>
+            </thead>
+            <tbody id="redovi-obracuna"></tbody>
+            <tfoot>
+              <tr>
+                <th scope="row" colspan="2">
+                  <span class="ukupno-perioda-oznaka">
+                    <span class="ukupno-perioda-tacka" aria-hidden="true"></span>
+                    Ukupan zbir za period:
+                  </span>
+                </th>
+                <td id="ukupno-perioda"></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <p id="prazan-period" class="prazan-period" hidden>Nema unosa za izabrani period.</p>
+      </section>
+    </section>
+
+    <section id="sekcija-unos" hidden>
+      <h1>Unos novog podatka</h1>
+      <form id="forma-unos">
+        <div>
+          <label for="datum-unosa">Datum</label>
+          <input type="date" id="datum-unosa" name="datum" required>
+        </div>
+        <p id="poruka-unosa-konfiguracije" role="status"></p>
+        <fieldset id="izbor-vrste-dana">
+          <legend>Vrsta dana</legend>
+          <div><label><input type="radio" name="vrsta-dana" value="radni" checked> Radni dan</label></div>
+          <div><label><input type="radio" name="vrsta-dana" value="godisnji"> Godišnji</label></div>
+          <div><label><input type="radio" name="vrsta-dana" value="bolovanje"> Bolovanje</label></div>
+        </fieldset>
+        <fieldset id="stavke-radnog-dana" hidden>
+          <legend>Podaci za radni dan</legend>
+          <div data-unos-opcija="kilometar" hidden>
+            <label for="kilometri-pocetni">Početni kilometri</label>
+            <input type="number" id="kilometri-pocetni" min="0" step="1" data-kilometri-pocetni>
+            <label for="kilometri-zavrsni">Završni kilometri</label>
+            <input type="number" id="kilometri-zavrsni" min="0" step="1" data-kilometri-zavrsni>
+            <p>Pređena razdaljina: <output id="razlika-kilometara">0</output> km</p>
+          </div>
+          <div data-unos-opcija="cekanje" hidden>
+            <label>
+              <input type="checkbox" data-opcija-ukljuci="cekanje">
+              Čekanje
+            </label>
+            <div data-vrijednost-container hidden>
+              <input type="number" id="broj-sati-cekanja" aria-label="Broj sati čekanja" min="0" step="1" data-vrijednost-opcije="cekanje" disabled>
+            </div>
+          </div>
+          <div data-unos-opcija="stranka" hidden>
+            <label>
+              <input type="checkbox" data-opcija-ukljuci="stranka">
+              Stranke
+            </label>
+            <div data-vrijednost-container hidden>
+              <input type="number" id="broj-stranaka" aria-label="Broj stranaka" min="0" step="1" data-vrijednost-opcije="stranka" disabled>
+            </div>
+          </div>
+          <div data-unos-opcija="bonus" hidden>
+            <label>
+              <input type="checkbox" data-opcija-ukljuci="bonus">
+              Dodaci
+            </label>
+            <div data-vrijednost-container hidden>
+              <input type="number" id="iznos-bonusa" aria-label="Količina dodataka" min="0" step="1" data-vrijednost-opcije="bonus" disabled>
+            </div>
+          </div>
+          <div data-unos-opcija="procenat" hidden>
+            <fieldset>
+              <legend>Ture</legend>
+              <div id="lista-tura"></div>
+              <button type="button" id="dugme-dodaj-turu">Dodaj novu turu</button>
+            </fieldset>
+          </div>
+        </fieldset>
+        <p id="napomena-kilometara-izmjena" hidden>
+          Sačuvana je samo razlika kilometara; početak je postavljen na 0. Unesite stvarne vrijednosti ako želite korigovati kilometražu.
+        </p>
+        <button type="submit" id="dugme-pregled-unosa">OK</button>
+        <button type="button" id="dugme-odustani-unosa">Odustani</button>
+        <p id="poruka-unosa" role="status"></p>
+      </form>
+    </section>
+
+    <dialog id="dijalog-pregled-unosa" aria-labelledby="naslov-pregleda-unosa">
+      <h2 id="naslov-pregleda-unosa">Proverite unete podatke</h2>
+      <div id="sadrzaj-pregleda-unosa"></div>
+      <p id="poruka-potvrde-unosa" role="status"></p>
+      <div>
+        <button type="button" id="dugme-izmeni-unos">Izmeni</button>
+        <button type="button" id="dugme-potvrdi-unos">Potvrdi unos</button>
+      </div>
+    </dialog>
+  </main>
+
+  <footer id="auth-footer" class="auth-footer">
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 19 6v5c0 4.5-2.9 8-7 10-4.1-2-7-5.5-7-10V6l7-3Z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
+      </svg>
+      Evidencija i obračun
+    </span>
+    <span class="footer-separator" aria-hidden="true">•</span>
+    <span>Sistem za praćenje plate vozača kamiona</span>
+  </footer>
+
+  <script type="module" src="/static/js/script.js?v=15"></script>
+</body>
