@@ -422,9 +422,9 @@
         <p id="poruka-unosa-konfiguracije" role="status"></p>
         <fieldset id="izbor-vrste-dana">
           <legend>Vrsta dana</legend>
-          <div><label><input type="radio" name="vrsta-dana" value="radni" checked> Radni dan</label></div>
-          <div><label><input type="radio" name="vrsta-dana" value="godisnji"> Godišnji</label></div>
-          <div><label><input type="radio" name="vrsta-dana" value="bolovanje"> Bolovanje</label></div>
+          <div data-vrsta-dana="radni"><label><input type="radio" name="vrsta-dana" value="radni" checked> Radni dan</label></div>
+          <div data-vrsta-dana="godisnji"><label><input type="radio" name="vrsta-dana" value="godisnji"> Godišnji</label></div>
+          <div data-vrsta-dana="bolovanje"><label><input type="radio" name="vrsta-dana" value="bolovanje"> Bolovanje</label></div>
         </fieldset>
         <fieldset id="stavke-radnog-dana" hidden>
           <legend>Podaci za radni dan</legend>
@@ -502,5 +502,5 @@
     <span>Sistem za praćenje plate vozača kamiona</span>
   </footer>
 
-  <script type="module" src="/static/js/script.js?v=20"></script>
+  <script type="module" src="/static/js/script.js?v=21"></script>
 </body>

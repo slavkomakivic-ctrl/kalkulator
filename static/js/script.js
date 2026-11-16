@@ -1,5 +1,5 @@
 import { inicijalizujPregled, prikaziPregledPerioda } from "./period.js?v=10";
-import "./unos.js?v=9";
+import "./unos.js?v=10";
 
 const sekcijaPrijave = document.getElementById("sekcija-prijava");
 const sekcijaRegistracije = document.getElementById("registracija");

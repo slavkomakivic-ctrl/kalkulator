@@ -118,6 +118,13 @@ function postaviVrstuDana() {
 
 function sakrijOpcijeBezKonfiguracije() {
     poljeRadnogDana.hidden = true;
+    for (const vrsta of ["godisnji", "bolovanje"]) {
+        const radio = formaUnosa.querySelector(`input[name="vrsta-dana"][value="${vrsta}"]`);
+        radio.disabled = true;
+        radio.closest("[data-vrsta-dana]").hidden = true;
+    }
+    formaUnosa.querySelector('input[name="vrsta-dana"][value="radni"]').checked = true;
+
     for (const wrapper of poljeOpcija) {
         wrapper.hidden = true;
         for (const kontrola of wrapper.querySelectorAll("input")) {
@@ -188,7 +195,12 @@ function odaberiKonfiguracijuZaDatum() {
 
     for (const vrsta of ["godisnji", "bolovanje"]) {
         const radio = formaUnosa.querySelector(`input[name="vrsta-dana"][value="${vrsta}"]`);
-        radio.disabled = !Object.hasOwn(konfiguracijaZaDatum.cijene, vrsta);
+        const cijena = konfiguracijaZaDatum.cijene[vrsta];
+        const dostupna = Object.hasOwn(konfiguracijaZaDatum.cijene, vrsta)
+            && Number.isFinite(Number(cijena))
+            && Number(cijena) > 0;
+        radio.closest("[data-vrsta-dana]").hidden = !dostupna;
+        radio.disabled = !dostupna;
         if (radio.disabled && radio.checked) {
             formaUnosa.querySelector('input[name="vrsta-dana"][value="radni"]').checked = true;
         }
