@@ -1,4 +1,6 @@
 from pathlib import Path
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -12,7 +14,13 @@ from routes_konfiguracija import router as konfiguracija_router
 from routes_unos import router as unos_router
 from routes_kalkulacije import router as kalk_router
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    database.inicijalizuj_tabele()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
