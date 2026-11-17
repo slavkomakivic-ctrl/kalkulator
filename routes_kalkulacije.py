@@ -71,7 +71,11 @@ def kalkulacija_za_dan(podaci: dict, cijene: dict):
     unos = podaci.get("unos", {})
     procenat = cijene.get("procenat", 0)
 
-    iznosi = {k: unos[k] * cijene[k] for k in unos if k in cijene}
+    iznosi = {
+        k: unos[k] * (1 if k == "bonus" else cijene[k])
+        for k in unos
+        if k in cijene
+    }
     
     if procenat > 0:
         ture = unos["ture"]

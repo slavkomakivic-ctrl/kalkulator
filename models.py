@@ -1,6 +1,6 @@
 from datetime import date
 from enum import Enum
-from pydantic import BaseModel, Field, NonNegativeFloat, NonNegativeInt, PositiveFloat
+from pydantic import BaseModel, Field, NonNegativeFloat, NonNegativeInt, PositiveFloat, field_validator
 
 class Korisnik(BaseModel):
     korisnicko_ime: str = Field(min_length=1, max_length=30)
@@ -19,13 +19,19 @@ class Opcija(str, Enum):
     stranka = "stranka"
     godisnji = "godisnji"
     bolovanje = "bolovanje"
-    bonus_kilometri = "bonus_kilometri"
-    bonus_promet = "bonus_promet"
     bonus = "bonus"
 
 class Konfiguracija(BaseModel):
     cijene: dict[Opcija, PositiveFloat]
     vazi_od: date = Field(default_factory=date.today)
+
+    @field_validator("cijene")
+    @classmethod
+    def postavi_nominalnu_cijenu_bonusa(cls, cijene: dict[Opcija, float]) -> dict[Opcija, float]:
+        if Opcija.bonus in cijene:
+            cijene = cijene.copy()
+            cijene[Opcija.bonus] = 1.0
+        return cijene
 
 class VrstaDana(str, Enum):
     radni = "radni"

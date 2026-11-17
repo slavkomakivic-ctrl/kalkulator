@@ -16,8 +16,6 @@ const naziviStavki = {
     stranka: "Stranka",
     godisnji: "Godišnji odmor",
     bolovanje: "Bolovanje",
-    bonus_kilometri: "Bonus kilometri",
-    bonus_promet: "Bonus na promet",
     bonus: "Dodaci",
     promet: "Promet"
 };

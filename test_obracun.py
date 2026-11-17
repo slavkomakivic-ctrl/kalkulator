@@ -146,3 +146,23 @@ def test_period_s_jednim_radnim_danom(klijent, monkeypatch):
 def test_godisnji_uzima_cijenu_godisnjeg():
     iznosi, ukupno = modul.kalkulacija_za_dan({"vrsta_dana": "godisnji"}, {"godisnji": 50})
     assert ukupno == 50
+
+
+def test_dodaci_koriste_nominalnu_cijenu_jedan():
+    iznosi, ukupno = modul.kalkulacija_za_dan(
+        {"vrsta_dana": "radni", "unos": {"bonus": 30}},
+        {"bonus": 25},
+    )
+    assert iznosi["bonus"] == 30
+    assert ukupno == 30
+
+
+def test_konfiguracija_normalizuje_cijenu_dodataka():
+    from models import Konfiguracija, Opcija
+
+    konfiguracija = Konfiguracija(
+        cijene={"bonus": 25},
+        vazi_od=date(2026, 11, 1),
+    )
+
+    assert konfiguracija.cijene[Opcija.bonus] == 1

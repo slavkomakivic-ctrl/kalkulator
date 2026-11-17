@@ -362,9 +362,12 @@ if (formaKonfiguracije) {
             for (const opcija of opcije) {
                 const nazivOpcije = opcija.dataset.opcija;
                 const dostupna = Object.hasOwn(konfiguracija.cijene, nazivOpcije);
+                opcija.checked = dostupna;
+                if (nazivOpcije === "bonus") {
+                    continue;
+                }
                 const kontejnerCijene = opcija.closest("div").querySelector("[data-cijena-container]");
                 const poljeCijene = kontejnerCijene.querySelector("[data-cijena]");
-                opcija.checked = dostupna;
                 kontejnerCijene.hidden = !dostupna;
                 poljeCijene.disabled = !dostupna;
                 poljeCijene.required = dostupna;
@@ -400,6 +403,9 @@ if (formaKonfiguracije) {
 
     opcije.forEach((opcija) => {
         opcija.addEventListener("change", () => {
+            if (opcija.dataset.opcija === "bonus") {
+                return;
+            }
             const poljeCijene = opcija.closest("div").querySelector("[data-cijena-container]");
             const unosCijene = poljeCijene.querySelector("[data-cijena]");
             poljeCijene.hidden = !opcija.checked;
@@ -422,6 +428,11 @@ if (formaKonfiguracije) {
 
         for (const opcija of opcije) {
             if (!opcija.checked) {
+                continue;
+            }
+
+            if (opcija.dataset.opcija === "bonus") {
+                cijene.bonus = 1;
                 continue;
             }
 

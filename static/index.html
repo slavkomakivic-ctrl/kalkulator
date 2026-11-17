@@ -173,79 +173,61 @@
           <div>
             <label><input type="checkbox" data-opcija="kilometar"> Po kilometru</label>
             <div data-cijena-container hidden>
-              <label for="cijena-kilometar">Cijena po kilometru (EUR)</label>
+              <label for="cijena-kilometar">Cijena kilometra (EUR)</label>
               <input type="number" id="cijena-kilometar" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
             <label><input type="checkbox" data-opcija="dnevnica"> Dnevnica</label>
             <div data-cijena-container hidden>
-              <label for="cijena-dnevnica">Cijena dnevnice (EUR)</label>
+              <label for="cijena-dnevnica">Visina dnevnice (EUR)</label>
               <input type="number" id="cijena-dnevnica" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
             <label><input type="checkbox" data-opcija="procenat"> Procenat</label>
             <div data-cijena-container hidden>
-              <label for="cijena-procenat">Cijena procenta (%)</label>
+              <label for="cijena-procenat">Procenat od cijene prevoza (%). U slučaju da nemate cijene prevoza nego samo koliko vi dobijate od ture upišite 100.</label>
               <input type="number" id="cijena-procenat" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
-            <label><input type="checkbox" data-opcija="fiks"> Fiksni iznos</label>
+            <label><input type="checkbox" data-opcija="fiks"> Fiksna plata</label>
             <div data-cijena-container hidden>
-              <label for="cijena-fiks">Fiksna cijena (EUR)</label>
+              <label for="cijena-fiks">Ovdje unosite osnovnu platu koja je svaki mjesec ista (EUR)</label>
               <input type="number" id="cijena-fiks" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
             <label><input type="checkbox" data-opcija="cekanje"> Čekanje</label>
             <div data-cijena-container hidden>
-              <label for="cijena-cekanje">Cijena čekanja (EUR)</label>
+              <label for="cijena-cekanje">Cijena čekanja po satu (EUR). Ukoliko nemate odredjenu cijenu čekanja po satu, a ipak imate neko neodređeno plaćanje čekanja samo upišite 1.</label>
               <input type="number" id="cijena-cekanje" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
             <label><input type="checkbox" data-opcija="stranka"> Stranka</label>
             <div data-cijena-container hidden>
-              <label for="cijena-stranka">Cijena stranke (EUR)</label>
+              <label for="cijena-stranka">Cijena stranke utovar/istovar (EUR)</label>
               <input type="number" id="cijena-stranka" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
             <label><input type="checkbox" data-opcija="godisnji"> Godišnji odmor</label>
             <div data-cijena-container hidden>
-              <label for="cijena-godisnji">Cijena godišnjeg odmora (EUR)</label>
+              <label for="cijena-godisnji">Cijena dana godišnjeg odmora (EUR)</label>
               <input type="number" id="cijena-godisnji" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
             <label><input type="checkbox" data-opcija="bolovanje"> Bolovanje</label>
             <div data-cijena-container hidden>
-              <label for="cijena-bolovanje">Cijena bolovanja (EUR)</label>
+              <label for="cijena-bolovanje">Cijena dana bolovanja (EUR)</label>
               <input type="number" id="cijena-bolovanje" min="0.01" step="any" data-cijena disabled>
             </div>
           </div>
           <div>
-            <label><input type="checkbox" data-opcija="bonus_kilometri"> Bonus kilometri</label>
-            <div data-cijena-container hidden>
-              <label for="cijena-bonus-kilometri">Cijena bonus kilometara (EUR)</label>
-              <input type="number" id="cijena-bonus-kilometri" min="0.01" step="any" data-cijena disabled>
-            </div>
-          </div>
-          <div>
-            <label><input type="checkbox" data-opcija="bonus_promet"> Bonus na promet</label>
-            <div data-cijena-container hidden>
-              <label for="cijena-bonus-promet">Cijena bonusa na promet (EUR)</label>
-              <input type="number" id="cijena-bonus-promet" min="0.01" step="any" data-cijena disabled>
-            </div>
-          </div>
-          <div>
-            <label><input type="checkbox" data-opcija="bonus"> Bonus</label>
-            <div data-cijena-container hidden>
-              <label for="cijena-bonus">Cijena bonusa (EUR)</label>
-              <input type="number" id="cijena-bonus" min="0.01" step="any" data-cijena disabled>
-            </div>
+            <label><input type="checkbox" data-opcija="bonus"> Dodaci</label>
           </div>
         </fieldset>
         <button type="submit">Sačuvaj konfiguraciju</button>
@@ -507,5 +489,5 @@
     <span>Sistem za praćenje plate vozača kamiona</span>
   </footer>
 
-  <script type="module" src="/static/js/script.js?v=22"></script>
+  <script type="module" src="/static/js/script.js?v=23"></script>
 </body>
