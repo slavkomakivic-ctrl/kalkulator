@@ -222,10 +222,14 @@ function prikaziObracun(rezultat) {
         redoviObracuna.append(red);
     }
 
+    const fiksniIznos = Number(rezultat.fiksni_iznos) || 0;
+    document.getElementById("red-fiksni-iznos").hidden = fiksniIznos <= 0;
+    document.getElementById("iznos-fiksni-period").textContent = formatirajIznos(fiksniIznos);
     document.getElementById("ukupno-perioda").textContent = formatirajIznos(rezultat.ukupni_zbir);
     document.getElementById("broj-prikazanih").textContent = String(rezultat.odgovor.length);
-    tabelaWrapper.hidden = rezultat.odgovor.length === 0;
-    prazanPeriod.hidden = rezultat.odgovor.length !== 0;
+    const imaRezultata = rezultat.odgovor.length > 0 || fiksniIznos > 0;
+    tabelaWrapper.hidden = !imaRezultata;
+    prazanPeriod.hidden = imaRezultata;
     rezultatiPerioda.hidden = false;
 }
 

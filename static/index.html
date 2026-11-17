@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Kalkulator za vozača</title>
-  <link rel="stylesheet" href="/static/css/style.css?v=24">
+  <link rel="stylesheet" href="/static/css/style.css?v=26">
 </head>
 
 <body class="auth-mode">
@@ -395,6 +395,11 @@
             </thead>
             <tbody id="redovi-obracuna"></tbody>
             <tfoot>
+              <tr id="red-fiksni-iznos" hidden>
+                <th scope="row" colspan="2">Fiksna plata (puni mjeseci)</th>
+                <td id="iznos-fiksni-period"></td>
+                <td></td>
+              </tr>
               <tr>
                 <th scope="row" colspan="2">
                   <span class="ukupno-perioda-oznaka">
@@ -502,5 +507,5 @@
     <span>Sistem za praćenje plate vozača kamiona</span>
   </footer>
 
-  <script type="module" src="/static/js/script.js?v=21"></script>
+  <script type="module" src="/static/js/script.js?v=22"></script>
 </body>

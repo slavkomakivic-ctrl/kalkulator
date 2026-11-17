@@ -75,6 +75,11 @@ def provjeri_postojanje_vazece_konfiguracije(profil_id: int = Depends(trenutni_p
 def konfiguracija_kalkulatora(konfiguracija: Konfiguracija, profil_id: int = Depends(trenutni_profil)):
     if "vazi_od" not in konfiguracija.model_fields_set:
         raise HTTPException(status_code=422, detail="Datum početka važenja konfiguracije je obavezan.")
+    if "fiks" in konfiguracija.cijene and konfiguracija.vazi_od.day != 1:
+        raise HTTPException(
+            status_code=422,
+            detail="Konfiguracija s fiksnom platom mora važiti od prvog dana u mjesecu.",
+        )
 
     try:
         kursor.execute("""

@@ -56,6 +56,50 @@ def test_period_bez_unosa_vraca_404(klijent, monkeypatch):
     assert r.status_code == 404
 
 
+def test_fiksna_plata_se_dodaje_za_cijeli_mjesec_bez_dnevnih_unosa(klijent, monkeypatch):
+    postavi(monkeypatch, LazniKursor(svi=[
+        [],
+        [({"fiks": 1800}, date(2026, 11, 1))],
+    ]))
+    r = klijent.get("/obracun_za_period?od=2026-11-01&do=2026-11-30")
+
+    assert r.status_code == 200
+    assert r.json()["odgovor"] == []
+    assert r.json()["fiksni_iznos"] == 1800
+    assert r.json()["ukupni_zbir"] == 1800
+
+
+def test_fiksna_plata_se_dodaje_na_dnevne_zarade(klijent, monkeypatch):
+    godisnji_unos = {"vrsta_dana": "godisnji"}
+    cijene_dnevnog_unosa = {"godisnji": 50}
+    postavi(monkeypatch, LazniKursor(
+        svi=[
+            [(date(2026, 11, 12), godisnji_unos)],
+            [({"fiks": 1800}, date(2026, 11, 1))],
+        ],
+        jedan=[(godisnji_unos,), (cijene_dnevnog_unosa,)],
+    ))
+    r = klijent.get("/obracun_za_period?od=2026-11-01&do=2026-11-30")
+
+    assert r.status_code == 200
+    assert r.json()["odgovor"][0]["ukupno"] == 50
+    assert r.json()["fiksni_iznos"] == 1800
+    assert r.json()["ukupni_zbir"] == 1850
+
+
+def test_fiksna_plata_se_ne_dodaje_za_djelimican_mjesec(klijent, monkeypatch):
+    postavi(monkeypatch, LazniKursor(svi=[[]]))
+    r = klijent.get("/obracun_za_period?od=2026-11-01&do=2026-11-15")
+
+    assert r.status_code == 404
+
+
+def test_period_vise_mjeseci_uzima_samo_potpune_mjesece():
+    assert modul.puni_mjeseci_u_periodu(
+        date(2026, 11, 15), date(2027, 1, 10)
+    ) == [date(2026, 12, 1)]
+
+
 # --- tačka 7: od i do su obavezni ---
 def test_period_bez_od_do_vraca_422(klijent, monkeypatch):
     postavi(monkeypatch, LazniKursor())

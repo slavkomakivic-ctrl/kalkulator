@@ -1,4 +1,4 @@
-import { inicijalizujPregled, prikaziPregledPerioda } from "./period.js?v=10";
+import { inicijalizujPregled, prikaziPregledPerioda } from "./period.js?v=11";
 import "./unos.js?v=10";
 
 const sekcijaPrijave = document.getElementById("sekcija-prijava");
@@ -272,7 +272,26 @@ if (formaKonfiguracije) {
     const dugmeOdustaniKonfiguracije = document.getElementById("dugme-odustani-konfiguracije");
     const dugmeIzmijeniKonfiguraciju = document.getElementById("dugme-izmijeni-konfiguraciju");
     const poljeVaziOd = document.getElementById("vazi-od");
+    const labelaVaziOd = formaKonfiguracije.querySelector('label[for="vazi-od"]');
     const opcije = formaKonfiguracije.querySelectorAll("[data-opcija]");
+
+    function postaviTipPoljaVazenja(mjesecnaKonfiguracija) {
+        const vrijednost = poljeVaziOd.value;
+        if (mjesecnaKonfiguracija && poljeVaziOd.type !== "month") {
+            poljeVaziOd.type = "month";
+            poljeVaziOd.value = vrijednost ? vrijednost.slice(0, 7) : "";
+        } else if (!mjesecnaKonfiguracija && poljeVaziOd.type !== "date") {
+            poljeVaziOd.type = "date";
+            poljeVaziOd.value = vrijednost ? `${vrijednost}-01` : "";
+        }
+        labelaVaziOd.textContent = mjesecnaKonfiguracija
+            ? "Konfiguracija važi od mjeseca"
+            : "Konfiguracija važi od";
+    }
+
+    function postaviVrijednostVazenja(datum) {
+        poljeVaziOd.value = poljeVaziOd.type === "month" ? datum.slice(0, 7) : datum;
+    }
 
     function danasnjiDatum() {
         const danas = new Date();
@@ -293,6 +312,20 @@ if (formaKonfiguracije) {
             datum.setDate(datum.getDate() + 1);
         }
         return formatiraj();
+    }
+
+    function prviSlobodanMjesec(konfiguracije, pocetniDatum) {
+        const zauzetiMjeseci = new Set(
+            konfiguracije.map((stavka) => String(stavka.vazi_od).slice(0, 7))
+        );
+        const datum = new Date(`${pocetniDatum.slice(0, 7)}-01T00:00:00`);
+        const formatirajMjesec = () =>
+            `${datum.getFullYear()}-${String(datum.getMonth() + 1).padStart(2, "0")}`;
+
+        while (zauzetiMjeseci.has(formatirajMjesec())) {
+            datum.setMonth(datum.getMonth() + 1);
+        }
+        return `${formatirajMjesec()}-01`;
     }
 
     dugmeIzmijeniKonfiguraciju.addEventListener("click", async () => {
@@ -325,6 +358,7 @@ if (formaKonfiguracije) {
             }
 
             formaKonfiguracije.reset();
+            postaviTipPoljaVazenja(false);
             for (const opcija of opcije) {
                 const nazivOpcije = opcija.dataset.opcija;
                 const dostupna = Object.hasOwn(konfiguracija.cijene, nazivOpcije);
@@ -336,7 +370,12 @@ if (formaKonfiguracije) {
                 poljeCijene.required = dostupna;
                 poljeCijene.value = dostupna ? String(konfiguracija.cijene[nazivOpcije]) : "";
             }
-            poljeVaziOd.value = sljedeciSlobodanDatum(rezultat.konfiguracije, datumDanas);
+            const fiksnaPlata = formaKonfiguracije.querySelector('[data-opcija="fiks"]').checked;
+            postaviTipPoljaVazenja(fiksnaPlata);
+            const sljedeciDatum = fiksnaPlata
+                ? prviSlobodanMjesec(rezultat.konfiguracije, datumDanas)
+                : sljedeciSlobodanDatum(rezultat.konfiguracije, datumDanas);
+            postaviVrijednostVazenja(sljedeciDatum);
             postaviRezimKonfiguracije(true);
             sekcijaPerioda.hidden = true;
             sekcijaKonfiguracije.hidden = false;
@@ -370,6 +409,9 @@ if (formaKonfiguracije) {
             if (!opcija.checked) {
                 unosCijene.value = "";
             }
+            if (opcija.dataset.opcija === "fiks") {
+                postaviTipPoljaVazenja(opcija.checked);
+            }
         });
     });
 
@@ -399,12 +441,15 @@ if (formaKonfiguracije) {
             return;
         }
 
-        const vaziOd = document.getElementById("vazi-od").value;
-        if (!vaziOd) {
+        const vrijednostVaziOd = poljeVaziOd.value;
+        if (!vrijednostVaziOd) {
             document.getElementById("vazi-od").focus();
             porukaKonfiguracije.textContent = "Unesite datum od kojeg konfiguracija važi.";
             return;
         }
+        const vaziOd = poljeVaziOd.type === "month"
+            ? `${vrijednostVaziOd}-01`
+            : vrijednostVaziOd;
 
         const token = localStorage.getItem("token");
         if (!token) {

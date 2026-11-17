@@ -1177,6 +1177,15 @@ button.dugme-sekundarno {
   font-weight: 750;
 }
 
+.tabela-obracuna tfoot td {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.tabela-obracuna tfoot #iznos-fiksni-period {
+  font-size: 1.25rem;
+}
+
 .tabela-obracuna tfoot {
   background: #111827;
 }
@@ -1587,14 +1596,19 @@ button.dugme-sekundarno {
   }
 
   .tabela-obracuna td.iznos-ukupno {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    justify-content: space-between;
     padding: 0;
     font-size: 1.1rem;
-    text-align: left;
+    text-align: right;
     vertical-align: middle;
   }
 
   .tabela-obracuna td.iznos-ukupno::before {
     content: "Ukupan zbir";
+    margin: 0;
   }
 
   .tabela-obracuna td.celija-akcija {
@@ -1632,6 +1646,10 @@ button.dugme-sekundarno {
     font-size: 0.95rem;
   }
 
+  .tabela-obracuna tfoot #iznos-fiksni-period {
+    font-size: 1.1rem;
+  }
+
   .tabela-obracuna tfoot th:first-child {
     padding: 0;
   }
@@ -1642,7 +1660,7 @@ button.dugme-sekundarno {
 
   .tabela-obracuna tfoot #ukupno-perioda {
     font-size: 1.3rem;
-    text-align: left;
+    text-align: right;
   }
 
   .tabela-obracuna tfoot tr > :first-child,
