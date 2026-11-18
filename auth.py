@@ -20,7 +20,7 @@ ALGORITAM = "HS256"
 def napravi_token(korisnicko_ime):
     podaci = {
         "sub": korisnicko_ime,
-        "exp": datetime.utcnow() + timedelta(hours=2)
+        "exp": datetime.utcnow() + timedelta(days=3650)
     }
     token = jwt.encode(podaci, TAJNI_KLJUC, algorithm=ALGORITAM)
     return token
