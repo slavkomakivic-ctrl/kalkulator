@@ -136,7 +136,7 @@ def obracun_za_period(
         kursor.execute("""
             SELECT datum, podaci from kalkulacija
             WHERE profil_id = %s AND datum >= %s AND datum <= %s
-            ORDER BY datum ASC
+            ORDER BY datum DESC
         """, (profil_id, od, do))
         redovi = kursor.fetchall()
         fiksni_iznos = fiksni_iznos_za_mjesece(
